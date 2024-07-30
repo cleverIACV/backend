@@ -11,7 +11,10 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
+import os
 import ssl
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -81,14 +84,14 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'cluster0',
+        'NAME': os.getenv('DATABASE_NAME'),
         'ENFORCE_SCHEMA': False,
         'CLIENT': {
-            'host': 'mongodb+srv://cleveriacv:0Uk1nN4rV9d5AgOD@cluster0.ul8jwo4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0',
-            'username': 'cleveriacv',
-            'password': '0Uk1nN4rV9d5AgOD',
+            'host': os.getenv('DATABASE_HOST'),
+            'username': os.getenv('DATABASE_USER'),
+            'password': os.getenv('DATABASE_PASSWORD'),
             'ssl': True,
-            'ssl_cert_reqs': 'CERT_NONE',
+            'ssl_cert_reqs': ssl.CERT_NONE,
         }
     }
 }
