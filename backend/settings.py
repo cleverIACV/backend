@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import ssl
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'base.apps.BaseConfig', 
+    'backoffice.apps.BaseConfig', 
     
 
 ]
@@ -86,6 +87,8 @@ DATABASES = {
             'host': 'mongodb+srv://cleveriacv:0Uk1nN4rV9d5AgOD@cluster0.ul8jwo4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0',
             'username': 'cleveriacv',
             'password': '0Uk1nN4rV9d5AgOD',
+            'ssl': True,
+            'ssl_cert_reqs': 'CERT_NONE',
         }
     }
 }
