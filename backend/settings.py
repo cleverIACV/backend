@@ -31,9 +31,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+# CSRF_TRUSTED_ORIGINS = ['https://clever-ia-cv.find-auto-part.com']
+CSRF_TRUSTED_ORIGINS = ['*']
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
