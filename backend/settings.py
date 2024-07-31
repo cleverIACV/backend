@@ -42,6 +42,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Package install application 
+    'drf_yasg',
+
+    # Local application
     'backoffice.apps.BaseConfig', 
     
 
