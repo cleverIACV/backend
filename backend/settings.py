@@ -95,8 +95,8 @@ DATABASES = {
             'host': os.getenv('DATABASE_HOST'),
             'username': os.getenv('DATABASE_USER'),
             'password': os.getenv('DATABASE_PASSWORD'),
-            'ssl': True,
-            'ssl_cert_reqs': ssl.CERT_NONE,
+            #'ssl': True,
+            #'ssl_cert_reqs': ssl.CERT_NONE,
         }
     }
 }
