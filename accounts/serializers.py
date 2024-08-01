@@ -50,15 +50,15 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 # Sérializer pour la connexion
 class LoginSerializer(serializers.Serializer):
-    email = serializers.EmailField(required=True)
+    username = serializers.CharField(required=True)
     password = serializers.CharField(write_only=True, required=True)
 
     def validate(self, data):
-        email = data.get('email', None)
+        username = data.get('username', None)
         password = data.get('password', None)
 
-        if not email or not password:
-            raise serializers.ValidationError('Both email and password are required')
+        if not username or not password:
+            raise serializers.ValidationError('Both username and password are required')
 
         return data
 

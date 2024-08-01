@@ -15,16 +15,20 @@ from django.utils.encoding import force_bytes, force_str
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
 from email_app.utils import send_email
+from drf_yasg.utils import swagger_auto_schema
 
+@swagger_auto_schema(tags=['Authentification'])
 class CreateUserView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CreateUserSerializer
     permission_classes = [AllowAny]
 
+@swagger_auto_schema(tags=['Authentification'])
 class ListUsersView(generics.ListAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
 
+@swagger_auto_schema(tags=['Authentification'])
 class RegisterView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = RegisterSerializer
@@ -48,6 +52,7 @@ class RegisterView(generics.CreateAPIView):
         send_email(subject, user.email, 'email/default_email.html', context)
         return user
 
+@swagger_auto_schema(tags=['Authentification'])
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
     permission_classes = [AllowAny]
@@ -73,6 +78,7 @@ class LoginView(generics.GenericAPIView):
                 return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@swagger_auto_schema(tags=['Authentification'])
 class ValidateAccountView(APIView):
     permission_classes = [AllowAny]
 
@@ -92,6 +98,7 @@ class ValidateAccountView(APIView):
         else:
             return Response({'detail': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
 
+@swagger_auto_schema(tags=['Authentification'])
 class PasswordResetRequestView(generics.GenericAPIView):
     serializer_class = PasswordResetSerializer
     permission_classes = [AllowAny]
@@ -113,6 +120,7 @@ class PasswordResetRequestView(generics.GenericAPIView):
         send_mail(mail_subject, message, 'noreply@mydomain.com', [user.email])
         return Response({'detail': 'Password reset link sent'}, status=status.HTTP_200_OK)
 
+@swagger_auto_schema(tags=['Authentification'])
 class PasswordResetConfirmView(generics.GenericAPIView):
     serializer_class = PasswordResetConfirmSerializer
     permission_classes = [AllowAny]
