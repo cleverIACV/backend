@@ -35,9 +35,10 @@ ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = ['*']
 
 # ALLOWED ORIGINS
-CORS_ALLOWED_ORIGINS = ['*']
+# CORS_ALLOWED_ORIGINS = ['*']
 
 CORS_ALLOW_ALL_ORIGINS = True  # Permettre tous les origines (à utiliser avec prudence en production)
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
 INSTALLED_APPS = [
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
     'rest_framework',
     # 'rest_framework.authtoken',
     'rest_framework_simplejwt',
+    'corsheaders',  
 
     # Local application
     'backoffice.apps.BaseConfig', 
@@ -71,6 +73,7 @@ REST_FRAMEWORK = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
