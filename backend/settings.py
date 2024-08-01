@@ -115,8 +115,8 @@ DATABASES = {
             'host': os.getenv('DATABASE_HOST'),
             'username': os.getenv('DATABASE_USER'),
             'password': os.getenv('DATABASE_PASSWORD'),
-            # 'ssl': True,
-            # 'ssl_cert_reqs': ssl.CERT_NONE,
+            'ssl': True,
+            'ssl_cert_reqs': ssl.CERT_NONE,
         }
     }
 }
@@ -130,7 +130,7 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 
-# AUTH_USER_MODEL = 'backoffice.CustomUser'
+AUTH_USER_MODEL = 'backoffice.CustomUser'
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -181,3 +181,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
 }
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    # Ajoutez d'autres backends si nécessaire
+)
