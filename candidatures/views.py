@@ -5,7 +5,7 @@ from rest_framework.exceptions import NotFound
 from .models import Candidature
 from .serializers import CandidatureSerializer
 from drf_yasg.utils import swagger_auto_schema
-# from ia_ner_nlp.cv_extraction import extract_cv_data
+from ia_ner_nlp.cv_extraction import CVExtractor
 
 class CandidatureListCreateView(generics.ListCreateAPIView):
     queryset = Candidature.objects.all()

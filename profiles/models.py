@@ -33,10 +33,12 @@ class Profil(models.Model):
     phone_company = models.CharField(max_length=20)
     resume = models.FileField(upload_to='resumes/', blank=True, null=True)
     cover_letter = models.FileField(upload_to='cover_letters/', blank=True, null=True)
+    extracted_data = models.JSONField(default=dict, blank=True, null=True)
     job_title = models.CharField(max_length=255)
     description = models.TextField()
     degree_level = models.CharField(max_length=255)
     availability = models.DateField(validators=[validate_availability])
+    
 
     def __str__(self):
         return (

@@ -12,6 +12,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from ia_ner_nlp.cv_extraction import CVExtractor
 
 class CreateProfilesView(generics.CreateAPIView):
     queryset = Profil.objects.all()
@@ -105,6 +106,18 @@ class UploadResumeView(APIView):
         if file:
             profil.resume = file
             profil.save()
+
+
+
+            # Extraire les informations du CV
+            cv_extractor = CVExtractor()
+            cv_data = cv_extractor.extract_cv_data(profil.resume.path)
+
+            # Stocker les informations extraites dans le profil de l'utilisateur sous forme de JSON
+            profil.extracted_data = cv_data
+            profil.save()
+
+            
             return Response({"message": "Resume uploaded successfully"}, status=status.HTTP_201_CREATED)
         return Response({"error": "No file provided"}, status=status.HTTP_400_BAD_REQUEST)
 
