@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'backoffice.apps.BaseConfig', 
     'accounts.apps.AccountsConfig',
     'email_app.apps.EmailAppConfig'
+    'profiles.apps.ProfilesConfig',
     
 
 ]
