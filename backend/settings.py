@@ -31,9 +31,16 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+# CSRF_TRUSTED_ORIGINS = ['https://clever-ia-cv.find-auto-part.com']
+CSRF_TRUSTED_ORIGINS = ['*']
+
+# ALLOWED ORIGINS
+# CORS_ALLOWED_ORIGINS = ['*']
+
+CORS_ALLOW_ALL_ORIGINS = True  # Permettre tous les origines (à utiliser avec prudence en production)
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -44,17 +51,29 @@ INSTALLED_APPS = [
 
     # Package install application 
     'drf_yasg',
+    'rest_framework',
+    # 'rest_framework.authtoken',
+    'rest_framework_simplejwt',
+    'corsheaders',  
 
     # Local application
     'backoffice.apps.BaseConfig', 
     'accounts.apps.AccountsConfig',
+    'email_app.apps.EmailAppConfig'
     
 
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -100,6 +119,15 @@ DATABASES = {
         }
     }
 }
+
+# Mail 
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND')
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 
 # AUTH_USER_MODEL = 'backoffice.CustomUser'
 
