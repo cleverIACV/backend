@@ -9,6 +9,7 @@ class ProfilSerializer(serializers.ModelSerializer):
             'city', 'state', 'country', 'phone', 'name_company', 'phone_company',
             'resume', 'cover_letter', 'job_title', 'description', 'degree_level', 'availability'
         ]
+        read_only_fields = ['user']  # Assurez-vous que le champ 'user' est en lecture seule
 
     def create(self, validated_data):
         profile = Profil.objects.create(**validated_data)

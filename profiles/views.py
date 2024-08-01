@@ -7,16 +7,15 @@ from .serializers import ProfilSerializer
 from rest_framework.exceptions import ValidationError, NotAuthenticated
 from rest_framework.permissions import IsAuthenticated
 from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
 
 class CreateProfilesView(generics.CreateAPIView):
     queryset = Profil.objects.all()
     serializer_class = ProfilSerializer
-    permission_classes = [IsAuthenticated]  # Assurez-vous que l'utilisateur est authentifié
+    permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(tags=['Profils'])
     def perform_create(self, serializer):
-        user = self.request.user  # Récupère l'utilisateur connecté
+        user = self.request.user
         if not user.is_authenticated:
             raise NotAuthenticated("Vous devez être connecté pour créer un profil.")
         serializer.save(user=user)
@@ -29,9 +28,33 @@ class UserAuthProfileView(generics.RetrieveAPIView):
     @swagger_auto_schema(tags=['Profils'])
     def get_object(self):
         try:
-            return Profil.objects.get(user=self.request.user)
+            user = self.request.user
+            return Profil.objects.get(user=user)
         except Profil.DoesNotExist:
             raise NotFound("Le profil de l'utilisateur n'a pas été trouvé.")
+
+class UpdateProfileView(generics.UpdateAPIView):
+    queryset = Profil.objects.all()
+    serializer_class = ProfilSerializer
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(tags=['Profils'])
+    def get_object(self):
+        try:
+            user = self.request.user
+            return Profil.objects.get(user=user)
+        except Profil.DoesNotExist:
+            raise NotFound("Le profil de l'utilisateur n'a pas été trouvé.")
+
+    @swagger_auto_schema(tags=['Profils'])
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        return Response(serializer.data)
 
 class DeleteProfilesView(generics.DestroyAPIView):
     serializer_class = ProfilSerializer
@@ -40,7 +63,8 @@ class DeleteProfilesView(generics.DestroyAPIView):
     @swagger_auto_schema(tags=['Profils'])
     def get_object(self):
         try:
-            return Profil.objects.get(user=self.request.user)
+            user = self.request.user
+            return Profil.objects.get(user=user)
         except Profil.DoesNotExist:
             raise NotFound("Le profil de l'utilisateur n'a pas été trouvé.")
 
