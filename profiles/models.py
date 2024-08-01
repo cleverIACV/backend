@@ -4,18 +4,17 @@ from backoffice.models import CustomUser
 from datetime import date
 from django.core.exceptions import ValidationError
 
-# Age validator : Si l'age est inférieur a 18 ans renvoyé une erreur
+# Age validator : Si l'âge est inférieur à 18 ans, renvoyer une erreur
 def validate_age(value):
     today = date.today()
     age = today.year - value.year - ((today.month, today.day) < (value.month, value.day))
-    if age < 16:
+    if age < 18:
         raise ValidationError("L'utilisateur doit avoir au moins 18 ans.")
 
-# Validator : Si la date de disponibilité est antérieur a la date d'aujourd'hui renvoyé une erreur
+# Validator : Si la date de disponibilité est antérieure à la date d'aujourd'hui, renvoyer une erreur
 def validate_availability(value):
     if value < date.today():
         raise ValidationError("La disponibilité ne peut pas être antérieure à la date d'aujourd'hui.")
-
 
 class Profil(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
@@ -57,4 +56,3 @@ class Profil(models.Model):
             f"Degree Level: {self.degree_level}, "
             f"Availability: {self.availability}"
         )
-
