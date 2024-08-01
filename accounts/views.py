@@ -16,6 +16,9 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
 from email_app.utils import send_email
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import CustomTokenObtainPairSerializer
+
 
 @swagger_auto_schema(tags=['Authentification'])
 class CreateUserView(generics.CreateAPIView):
@@ -142,3 +145,7 @@ class PasswordResetConfirmView(generics.GenericAPIView):
             return Response({'detail': 'Password successfully reset'}, status=status.HTTP_200_OK)
         else:
             return Response({'detail': 'Invalid token or user'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer

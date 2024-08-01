@@ -1,6 +1,26 @@
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from django.contrib.auth.models import Group
 from backoffice.models import CustomUser
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Ajoutez des informations supplémentaires
+        token['username'] = user.username
+        token['email'] = user.email
+        token['first_name'] = user.first_name
+        token['last_name'] = user.last_name
+
+        # Ajoutez les groupes de l'utilisateur
+        groups = user.groups.all()
+        token['group'] = groups[0].name if groups else None
+
+        return token
+
 
 # Sérializer pour les utilisateurs
 class CustomUserSerializer(serializers.ModelSerializer):
