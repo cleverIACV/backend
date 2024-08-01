@@ -33,6 +33,26 @@ class JobDetailView(generics.RetrieveAPIView):
     serializer_class = JobSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+@swagger_auto_schema(tags=['Jobs'])
+class JobUpdateView(generics.UpdateAPIView):
+    queryset = Job.objects.all()
+    serializer_class = JobSerializer
+    permission_classes = [permissions.IsAuthenticated, IsRecruiter]
+
+    def perform_update(self, serializer):
+        instance = serializer.save(posted_by=self.request.user)
+
+@swagger_auto_schema(tags=['Jobs'])
+class JobDeleteView(generics.DestroyAPIView):
+    queryset = Job.objects.all()
+    serializer_class = JobSerializer
+    permission_classes = [permissions.IsAuthenticated, IsRecruiter]
+
+    def perform_destroy(self, instance):
+        if instance.posted_by != self.request.user:
+            raise permissions.PermissionDenied("You do not have permission to delete this job.")
+        instance.delete()
+
 @swagger_auto_schema(tags=['Categories'])
 class CategoryListView(generics.ListAPIView):
     queryset = Category.objects.all()
@@ -44,3 +64,4 @@ class ContractTypeListView(generics.ListAPIView):
     queryset = ContractType.objects.all()
     serializer_class = ContractTypeSerializer
     permission_classes = [permissions.IsAuthenticated]
+
