@@ -34,6 +34,11 @@ ALLOWED_HOSTS = ['*']
 # CSRF_TRUSTED_ORIGINS = ['https://clever-ia-cv.find-auto-part.com']
 CSRF_TRUSTED_ORIGINS = ['*']
 
+# ALLOWED ORIGINS
+CORS_ALLOWED_ORIGINS = ['*']
+
+CORS_ALLOW_ALL_ORIGINS = True  # Permettre tous les origines (à utiliser avec prudence en production)
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
