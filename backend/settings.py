@@ -95,8 +95,8 @@ DATABASES = {
             'host': os.getenv('DATABASE_HOST'),
             'username': os.getenv('DATABASE_USER'),
             'password': os.getenv('DATABASE_PASSWORD'),
-            'ssl': True,
-            'ssl_cert_reqs': ssl.CERT_NONE,
+            # 'ssl': True,
+            # 'ssl_cert_reqs': ssl.CERT_NONE,
         }
     }
 }
@@ -143,3 +143,12 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
