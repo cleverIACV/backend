@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'email_app.apps.EmailAppConfig',
     'profiles.apps.ProfilesConfig',
     'jobs.apps.JobsConfig',
+    'candidatures.apps.CandidaturesConfig',
     
 
 ]
