@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CSRF Token</title>
+</head>
+<body>
+    {% csrf_token %}
+</body>
+
+<script>
+    // Fonction pour obtenir le jeton CSRF du cookie
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Ajouter le jeton CSRF à toutes les requêtes Swagger
+    const csrfToken = getCookie('csrftoken');
+    if (csrfToken) {
+        const requestInterceptor = {
+            requestInterceptor: function (request) {
+                request.headers['X-CSRFToken'] = csrfToken;
+                return request;
+            }
+        };
+        window.onload = function() {
+            const ui = SwaggerUIBundle({
+                url: "/swagger.json",
+                dom_id: '#swagger-ui',
+                presets: [
+                    SwaggerUIBundle.presets.apis,
+                    SwaggerUIStandalonePreset
+                ],
+                layout: "StandaloneLayout",
+                requestInterceptor: requestInterceptor.requestInterceptor,
+            });
+        };
+    }
+</script>
+
+
+</html>

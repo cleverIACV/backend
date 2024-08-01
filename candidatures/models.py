@@ -1,7 +1,8 @@
 from django.db import models
-from backoffice.models import CustomUser  # Import de l'utilisateur personnalisé si nécessaire
+from backoffice.models import CustomUser
 from profiles.models import Profil
 from jobs.models import Job
+from jsonfield import JSONField
 
 class Candidature(models.Model):
     STATUS_CHOICES = [
@@ -16,6 +17,7 @@ class Candidature(models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     score = models.FloatField(null=True, blank=True)
     review = models.TextField(blank=True, null=True)
+    extracted_data = JSONField(blank=True, null=True)
 
     def __str__(self):
         return f"Candidature {self.id} - {self.candidate.user.username} for {self.job.title}"
