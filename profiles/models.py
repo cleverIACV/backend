@@ -34,6 +34,7 @@ class Profil(models.Model):
     resume = models.FileField(upload_to='resumes/', blank=True, null=True)
     cover_letter = models.FileField(upload_to='cover_letters/', blank=True, null=True)
     extracted_data = models.JSONField(default=dict, blank=True, null=True)
+    final_analyse_cv_data = models.TextField()
     job_title = models.CharField(max_length=255)
     description = models.TextField()
     degree_level = models.CharField(max_length=255)

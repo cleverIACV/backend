@@ -13,6 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from ia_ner_nlp.cv_extraction import CVExtractor
+from ia_ner_nlp.openai_cv_analyzer import OpenAICVAnalyzer
 
 class CreateProfilesView(generics.CreateAPIView):
     queryset = Profil.objects.all()
@@ -115,9 +116,17 @@ class UploadResumeView(APIView):
 
             # Stocker les informations extraites dans le profil de l'utilisateur sous forme de JSON
             profil.extracted_data = cv_data
+
+            # Analyse C.V. By OpenIA
+            openai_analyzer = OpenAICVAnalyzer()
+            openai_analysis = openai_analyzer.interpret(cv_data)
+            profil.final_analyse_cv_data = openai_analysis
+
+            # 
             profil.save()
 
-            
+
+
             return Response({"message": "Resume uploaded successfully"}, status=status.HTTP_201_CREATED)
         return Response({"error": "No file provided"}, status=status.HTTP_400_BAD_REQUEST)
 

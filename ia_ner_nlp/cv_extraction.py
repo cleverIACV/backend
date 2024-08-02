@@ -3,6 +3,8 @@ from transformers import pipeline
 import io
 from PIL import Image
 import spacy
+import os
+from dotenv import load_dotenv
 
 class CVExtractor:
     def __init__(self):
