@@ -119,17 +119,19 @@ class UploadResumeView(APIView):
 
             # Analyse C.V. By OpenIA
             openai_analyzer = OpenAICVAnalyzer()
-            openai_analysis = openai_analyzer.interpret(cv_data, profil.job_title) # On ajout dans le second paramettre, la categories
+            openai_analysis = openai_analyzer.interpret(cv_data, profil.job_title)  # Ajout de la catégorie comme second paramètre
             profil.final_analyse_cv_data = openai_analysis
 
-            # 
+            # Sauvegarder les informations mises à jour dans le profil
             profil.save()
 
-
-
-            return Response({"message": "Resume uploaded successfully"}, status=status.HTTP_201_CREATED)
+            # Retourner la réponse avec l'analyse
+            return Response({
+                "message": "Resume uploaded successfully",
+                "analysis": openai_analysis
+            }, status=status.HTTP_201_CREATED)
+        
         return Response({"error": "No file provided"}, status=status.HTTP_400_BAD_REQUEST)
-
 
 class UploadCoverLetterView(APIView):
     parser_classes = (MultiPartParser, FormParser)

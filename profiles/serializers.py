@@ -4,12 +4,7 @@ from .models import Profil
 class ProfilSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profil
-        fields = [
-            'user', 'image', 'gender', 'date_of_birth', 'street', 'postal_code',
-            'city', 'state', 'country', 'phone', 'name_company', 'phone_company',
-            'resume', 'cover_letter', 'job_title', 'description', 'degree_level', 'availability'
-        ]
-        read_only_fields = ['user']  # Assurez-vous que le champ 'user' est en lecture seule
+        fields = '__all__'
 
     def create(self, validated_data):
         profile = Profil.objects.create(**validated_data)

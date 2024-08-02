@@ -6,7 +6,7 @@ from .models import Candidature
 from .serializers import CandidatureSerializer
 from drf_yasg.utils import swagger_auto_schema
 from ia_ner_nlp.cv_extraction import CVExtractor
-from profiles.models import Profil  # Assurez-vous que le modèle Profil est importé
+from profiles.models import Profil 
 
 class CandidatureListCreateView(generics.ListCreateAPIView):
     queryset = Candidature.objects.all()
