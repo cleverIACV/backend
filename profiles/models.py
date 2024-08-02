@@ -17,7 +17,7 @@ def validate_availability(value):
         raise ValidationError("La disponibilité ne peut pas être antérieure à la date d'aujourd'hui.")
 
 class Profil(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='profil')
     image = models.ImageField(upload_to='profiles/', blank=True, null=True)
     gender = models.CharField(max_length=10, choices=[('M', 'Male'), ('F', 'Female'), ('O', 'Other')])
     date_of_birth = models.DateField(validators=[validate_age])
