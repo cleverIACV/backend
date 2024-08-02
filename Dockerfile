@@ -10,6 +10,15 @@ COPY requirements.txt /app/
 # Installer les dépendances
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Copier le script d'installation des modèles spaCy
+COPY install_spacy_models.sh /app/
+
+# Rendre le script exécutable
+RUN chmod +x /app/install_spacy_models.sh
+
+# Exécuter le script pour installer les modèles spaCy
+RUN /app/install_spacy_models.sh
+
 # Copier tout le contenu du projet dans le conteneur
 COPY . /app/
 
