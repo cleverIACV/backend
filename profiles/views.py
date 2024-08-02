@@ -12,6 +12,10 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from ia_ner_nlp.cv_extraction import CVExtractor
+from ia_ner_nlp.cover_letter_extraction import CoverLetterExtractor  
+from ia_ner_nlp.openai_cv_analyzer import OpenAICVAnalyzer
+from ia_ner_nlp.openai_cover_letter_analyzer import OpenAICoverLetterAnalyzer 
 
 class CreateProfilesView(generics.CreateAPIView):
     queryset = Profil.objects.all()
@@ -105,8 +109,27 @@ class UploadResumeView(APIView):
         if file:
             profil.resume = file
             profil.save()
+
+            # Extraire les informations du CV
+            cv_extractor = CVExtractor()
+            cv_data = cv_extractor.extract_cv_data(profil.resume.path)
+
+            # Stocker les informations extraites dans le profil de l'utilisateur sous forme de JSON
+            profil.extracted_data = cv_data
+
+            # Analyse C.V. By OpenIA
+            openai_analyzer = OpenAICVAnalyzer()
+            openai_analysis = openai_analyzer.interpret(cv_data, profil.job_title) # On ajout dans le second paramettre, la categories
+            profil.final_analyse_cv_data = openai_analysis
+
+            # 
+            profil.save()
+
+
+
             return Response({"message": "Resume uploaded successfully"}, status=status.HTTP_201_CREATED)
         return Response({"error": "No file provided"}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class UploadCoverLetterView(APIView):
     parser_classes = (MultiPartParser, FormParser)
@@ -134,5 +157,21 @@ class UploadCoverLetterView(APIView):
         if file:
             profil.cover_letter = file
             profil.save()
-            return Response({"message": "Cover letter uploaded successfully"}, status=status.HTTP_201_CREATED)
+
+            # Extraire les informations de la lettre de motivation
+            cover_letter_extractor = CoverLetterExtractor()
+            cover_letter_data = cover_letter_extractor.extract_cover_letter_data(profil.cover_letter.path)
+
+            # Stocker les informations extraites dans le profil de l'utilisateur sous forme de JSON
+            profil.extracted_cover_letter_data = cover_letter_data
+
+            # Analyse de la lettre de motivation avec OpenIA
+            cv_data = profil.extracted_data  # Assurez-vous que le CV a été téléchargé et extrait avant cette étape
+            openai_analyzer = OpenAICoverLetterAnalyzer()
+            openai_analysis = openai_analyzer.interpret(cover_letter_data, cv_data, profil.job_title)  # Passer le cv_data et job_title
+
+            profil.final_analyse_cover_letter_data = openai_analysis  # Assurez-vous que le champ final_analyse_cover_letter_data est un TextField
+            profil.save()
+
+            return Response({"message": "Cover letter uploaded and analyzed successfully", "openai_analysis": openai_analysis}, status=status.HTTP_201_CREATED)
         return Response({"error": "No file provided"}, status=status.HTTP_400_BAD_REQUEST)

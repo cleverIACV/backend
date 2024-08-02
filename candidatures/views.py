@@ -6,6 +6,7 @@ from .models import Candidature
 from .serializers import CandidatureSerializer
 from drf_yasg.utils import swagger_auto_schema
 from ia_ner_nlp.cv_extraction import CVExtractor
+from profiles.models import Profil  # Assurez-vous que le modèle Profil est importé
 
 class CandidatureListCreateView(generics.ListCreateAPIView):
     queryset = Candidature.objects.all()
@@ -15,8 +16,16 @@ class CandidatureListCreateView(generics.ListCreateAPIView):
     @swagger_auto_schema(tags=['Candidatures'])
     def perform_create(self, serializer):
         user = self.request.user
-        profile = user.profile  # Assurez-vous que chaque utilisateur a un profil
-        serializer.save(candidate=profile)
+        try:
+            profile = Profil.objects.get(user=user)
+        except Profil.DoesNotExist:
+            raise NotFound("Le profil de l'utilisateur n'a pas été trouvé.")
+
+        # Extraire les données du CV du profil
+        cv_file_path = profile.resume.path  # Assurez-vous que le chemin du fichier CV est correct
+        extracted_data = CVExtractor.extract_cv_data(cv_file_path)
+        
+        serializer.save(candidate=profile, extracted_data=extracted_data)
 
 class CandidatureRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Candidature.objects.all()
@@ -26,7 +35,10 @@ class CandidatureRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView
     @swagger_auto_schema(tags=['Candidatures'])
     def get_queryset(self):
         user = self.request.user
-        profile = user.profile
+        try:
+            profile = Profil.objects.get(user=user)
+        except Profil.DoesNotExist:
+            raise NotFound("Le profil de l'utilisateur n'a pas été trouvé.")
         return Candidature.objects.filter(candidate=profile)
 
     @swagger_auto_schema(tags=['Candidatures'])
@@ -55,5 +67,8 @@ class CandidaturesByUserView(generics.ListAPIView):
     @swagger_auto_schema(tags=['Candidatures'])
     def get_queryset(self):
         user = self.request.user
-        profile = user.profile
+        try:
+            profile = Profil.objects.get(user=user)
+        except Profil.DoesNotExist:
+            raise NotFound("Le profil de l'utilisateur n'a pas été trouvé.")
         return Candidature.objects.filter(candidate=profile)
