@@ -5,8 +5,7 @@ from rest_framework.exceptions import NotFound
 from .models import Candidature
 from .serializers import CandidatureSerializer
 from drf_yasg.utils import swagger_auto_schema
-from ia_ner_nlp.cv_extraction import CVExtractor
-from profiles.models import Profil 
+from profiles.models import Profil
 
 class CandidatureListCreateView(generics.ListCreateAPIView):
     queryset = Candidature.objects.all()
@@ -20,12 +19,29 @@ class CandidatureListCreateView(generics.ListCreateAPIView):
             profile = Profil.objects.get(user=user)
         except Profil.DoesNotExist:
             raise NotFound("Le profil de l'utilisateur n'a pas été trouvé.")
-
-        # Extraire les données du CV du profil
-        cv_file_path = profile.resume.path  # Assurez-vous que le chemin du fichier CV est correct
-        extracted_data = CVExtractor.extract_cv_data(cv_file_path)
         
-        serializer.save(candidate=profile, extracted_data=extracted_data)
+        serializer.save(candidate=profile)
+
+    @swagger_auto_schema(tags=['Candidatures'])
+    def create(self, request, *args, **kwargs):
+        data = request.data.copy()
+
+        # Créer la candidature
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        # Retourner la réponse avec toutes les données
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def get_success_headers(self, data):
+        try:
+            return {'Location': str(data['url'])}
+        except (TypeError, KeyError):
+            return {}
+
+
 
 class CandidatureRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Candidature.objects.all()
